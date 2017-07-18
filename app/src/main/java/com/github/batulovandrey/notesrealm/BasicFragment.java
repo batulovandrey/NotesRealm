@@ -3,38 +3,75 @@ package com.github.batulovandrey.notesrealm;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.github.batulovandrey.notesrealm.adapter.NoteAdapter;
+import com.github.batulovandrey.notesrealm.manager.RealmManager;
+import com.github.batulovandrey.notesrealm.model.Category;
+import com.github.batulovandrey.notesrealm.model.Note;
+
+import io.realm.Realm;
+import io.realm.RealmList;
 
 /**
  * Created by batul0ve on 15.07.2017.
  */
 
 public class BasicFragment extends Fragment {
+    private RecyclerView mRecyclerView;
+    private FloatingActionButton mAddNoteButton;
+    private NoteAdapter mAdapter;
 
+    private Realm mRealm;
     private String mTitle;
-    private TextView mTitleTextView;
+    private RealmList<Note> mNotesRealm;
 
 
     public static BasicFragment newInstance() {
         return new BasicFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRealm = new RealmManager(getContext()).getRealm();
+        mAdapter = new NoteAdapter(getNotesRealm());
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_basic, container, false);
-        mTitleTextView = (TextView) view.findViewById(R.id.title_text_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mAddNoteButton = (FloatingActionButton) view.findViewById(R.id.add_note_button);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mTitleTextView.setText(mTitle);
+        mRecyclerView.setAdapter(mAdapter);
+        mAddNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, getString(R.string.create_note_question), Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.yes, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // // TODO: 18.07.2017 go to new Activity to create note
+                                Toast.makeText(getContext(), "переход на новую активити", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .show();
+            }
+        });
     }
 
     public String getTitle() {
@@ -44,5 +81,16 @@ public class BasicFragment extends Fragment {
     public BasicFragment setTitle(String title) {
         mTitle = title;
         return this;
+    }
+
+    private RealmList<Note> getNotesRealm() {
+        RealmList<Note> notes = null;
+        for (Category category : mRealm.allObjects(Category.class)) {
+            if (category.getCategoryName().equals(mTitle)) {
+                notes = category.getNotes();
+                break;
+            }
+        }
+        return notes;
     }
 }

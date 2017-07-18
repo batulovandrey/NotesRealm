@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Realm mRealm;
 
-    private int mCount = 0;
-
     // region Activity lifeCycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
