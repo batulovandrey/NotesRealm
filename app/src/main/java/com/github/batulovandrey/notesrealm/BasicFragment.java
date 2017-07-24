@@ -1,6 +1,7 @@
 package com.github.batulovandrey.notesrealm;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -10,15 +11,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.batulovandrey.notesrealm.adapter.NoteAdapter;
 import com.github.batulovandrey.notesrealm.manager.RealmManager;
 import com.github.batulovandrey.notesrealm.model.Category;
 import com.github.batulovandrey.notesrealm.model.Note;
+import com.github.batulovandrey.notesrealm.ui.CreateNoteActivity;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by batul0ve on 15.07.2017.
@@ -32,7 +35,6 @@ public class BasicFragment extends Fragment {
     private Realm mRealm;
     private String mTitle;
     private RealmList<Note> mNotesRealm;
-
 
     public static BasicFragment newInstance() {
         return new BasicFragment();
@@ -65,13 +67,21 @@ public class BasicFragment extends Fragment {
                         .setAction(R.string.yes, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                // // TODO: 18.07.2017 go to new Activity to create note
-                                Toast.makeText(getContext(), "переход на новую активити", Toast.LENGTH_SHORT).show();
+                                startActivityForResult(CreateNoteActivity.createExplicitIntent(getContext(), mTitle), 1);
                             }
                         })
                         .show();
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     public String getTitle() {
