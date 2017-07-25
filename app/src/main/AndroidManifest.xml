@@ -25,6 +25,11 @@
             android:label="@string/create_note"
             android:theme="@style/Theme.Design.NoActionBar">
         </activity>
+        <activity android:name=".ui.NoteDetailActivity"
+                  android:configChanges="orientation|screenSize"
+                  android:label="@string/note_detail"
+                  android:theme="@style/Theme.Design.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

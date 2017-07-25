@@ -3,6 +3,7 @@
     <string name="add_category">Добавить категорию</string>
     <string name="exit_app">Выход из приложения</string>
     <string name="are_you_sure">Вы действительно желаете выйти?</string>
+    <string name="delete_note_question">Удалить заметку?</string>
     <string name="lose_input_data">Введеные данные будут потеряны. Уверены, что хотите вернуться?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
@@ -14,5 +15,6 @@
     <string name="note_title">Заголовок заметки</string>
     <string name="note_body">Текст заметки</string>
     <string name="create_note">Создать заметку</string>
+    <string name="note_detail">Просмотр заметки</string>
     <string name="close_activity">Выход без сохранения</string>
 </resources>
