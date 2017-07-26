@@ -2,10 +2,10 @@ package com.github.batulovandrey.notesrealm.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +30,7 @@ public class NoteDetailActivity extends AppCompatActivity implements View.OnClic
     private String mNoteBody;
 
     private Realm mRealm;
+    private boolean mNoteEdited;
 
     private Toolbar mToolbar;
     private TextView mNoteTitleTextView;
@@ -60,7 +61,7 @@ public class NoteDetailActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_note_button:
-                Snackbar.make(v, R.string.delete_note_question, Snackbar.LENGTH_SHORT)
+                Snackbar.make(v, R.string.delete_note_question, Snackbar.LENGTH_LONG)
                         .setAction(R.string.yes, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -69,7 +70,13 @@ public class NoteDetailActivity extends AppCompatActivity implements View.OnClic
                         }).show();
                 break;
             case R.id.edit_note_button:
-                // TODO: 24.07.2017 edit button
+                Snackbar.make(v, R.string.edit_note_question, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.yes, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                editNote();
+                            }
+                        }).show();
                 break;
         }
     }
@@ -77,13 +84,36 @@ public class NoteDetailActivity extends AppCompatActivity implements View.OnClic
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            finishActivity();
             return true;
         }
         return false;
     }
 
-    public void getDataFromIntent() {
+    @Override
+    public void onBackPressed() {
+        finishActivity();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                mNoteTitleTextView.setText(data.getExtras().getString(EXTRA_NOTE_TITLE));
+                mNoteBodyTextView.setText(data.getExtras().getString(EXTRA_NOTE_BODY));
+                mNoteEdited = true;
+            }
+        }
+    }
+
+    // region private methods
+
+    private void finishActivity() {
+        if (mNoteEdited)
+            finishWithResultOk();
+        else finish();
+    }
+    private void getDataFromIntent() {
         Bundle bundle = getIntent().getExtras();
         mCategoryName = bundle.getString(EXTRA_CATEGORY_NAME);
         mNoteTitle = bundle.getString(EXTRA_NOTE_TITLE);
@@ -135,4 +165,10 @@ public class NoteDetailActivity extends AppCompatActivity implements View.OnClic
         setResult(RESULT_OK, intent);
         finish();
     }
+
+    private void editNote() {
+        startActivityForResult(EditNoteActivity.createExplicitIntent(getApplicationContext(), mNoteTitle, mNoteId, mNoteBody), 2);
+    }
+
+    // endregion private methods
 }
