@@ -14,8 +14,7 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/title_input_layout"
@@ -32,24 +31,51 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/body_input_layout"
+    <TextView
+        android:id="@+id/note_id_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_input_layout"
-        android:padding="@dimen/padding_medium">
+        android:layout_below="@+id/title_input_layout"
+        android:gravity="right"
+        android:padding="@dimen/padding_xsmall"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        tools:text="note id i.e create data"/>
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/body_edit_text"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/note_id_text_view">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/body_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/note_body"
-            android:inputType="textMultiLine"/>
+            android:padding="@dimen/padding_xsmall">
 
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/body_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/note_body"
+                android:inputType="textMultiLine"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+        </android.support.design.widget.TextInputLayout>
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/save_note_button"
+        android:id="@+id/delete_note_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/main_button"
+        android:layout_alignLeft="@+id/main_button"
+        android:layout_alignStart="@+id/main_button"
+        android:src="@android:drawable/ic_menu_delete"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/main_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

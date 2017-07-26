@@ -3,41 +3,23 @@ package com.github.batulovandrey.notesrealm.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.github.batulovandrey.notesrealm.R;
-import com.github.batulovandrey.notesrealm.manager.RealmManager;
 import com.github.batulovandrey.notesrealm.model.Category;
 import com.github.batulovandrey.notesrealm.model.Note;
 
 import io.realm.Realm;
 
-public class NoteDetailActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String EXTRA_CATEGORY_NAME = "extra_category_name";
-    private static final String EXTRA_NOTE_TITLE = "extra_note_title";
-    private static final String EXTRA_NOTE_ID = "extra_note_id";
-    private static final String EXTRA_NOTE_BODY = "extra_note_body";
+/**
+ * Activity to show note details
+ *
+ * @author batul0ve
+ */
+public class NoteDetailActivity extends BaseNoteActivity {
 
-    private String mCategoryName;
-    private String mNoteTitle;
-    private String mNoteId;
-    private String mNoteBody;
-
-    private Realm mRealm;
     private boolean mNoteEdited;
-
-    private Toolbar mToolbar;
-    private TextView mNoteTitleTextView;
-    private TextView mNoteIdTextView;
-    private TextView mNoteBodyTextView;
-    private FloatingActionButton mEditNoteButton;
-    private FloatingActionButton mDeleteNoteButton;
 
     public static Intent createExplicitIntent(Context context, String categoryName, String noteTitle, String noteId, String noteBody) {
         Intent intent = new Intent(context, NoteDetailActivity.class);
@@ -49,71 +31,72 @@ public class NoteDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_detail);
-        mRealm = new RealmManager(this).getRealm();
-        getDataFromIntent();
-        initUI();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.delete_note_button:
-                Snackbar.make(v, R.string.delete_note_question, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.yes, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                deleteNote();
-                            }
-                        }).show();
-                break;
-            case R.id.edit_note_button:
-                Snackbar.make(v, R.string.edit_note_question, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.yes, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                editNote();
-                            }
-                        }).show();
-                break;
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finishActivity();
-            return true;
-        }
+    protected boolean isEditTextEnabled() {
         return false;
     }
 
     @Override
-    public void onBackPressed() {
-        finishActivity();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fillUIData();
+    }
+
+    @Override
+    protected int getMainButtonImageResource() {
+        return android.R.drawable.ic_menu_edit;
+    }
+
+    @Override
+    protected int getSecondButtonVisibility() {
+        return View.VISIBLE;
+    }
+
+    @Override
+    protected void onMainButtonClick(View view) {
+        Snackbar.make(view, R.string.edit_note_question, Snackbar.LENGTH_LONG)
+                .setAction(R.string.yes, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editNote();
+                    }
+                }).show();
+    }
+
+    @Override
+    protected void onSecondButtonClick(View view) {
+        Snackbar.make(view, R.string.delete_note_question, Snackbar.LENGTH_LONG)
+                .setAction(R.string.yes, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteNote();
+                    }
+                }).show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
-                mNoteTitleTextView.setText(data.getExtras().getString(EXTRA_NOTE_TITLE));
-                mNoteBodyTextView.setText(data.getExtras().getString(EXTRA_NOTE_BODY));
+                String newTitle = data.getStringExtra(EXTRA_NOTE_TITLE);
+                String newBody = data.getStringExtra(EXTRA_NOTE_BODY);
+                mTitleEditText.setText(newTitle);
+                mBodyEditText.setText(newBody);
                 mNoteEdited = true;
+                mNoteTitle = newTitle;
+                mNoteBody = newBody;
             }
         }
     }
 
-    // region private methods
-
-    private void finishActivity() {
-        if (mNoteEdited)
+    protected void handleActivityClosing() {
+        if (mNoteEdited) {
             finishWithResultOk();
-        else finish();
+        } else {
+            finish();
+        }
     }
-    private void getDataFromIntent() {
+
+    protected void getDataFromIntent() {
         Bundle bundle = getIntent().getExtras();
         mCategoryName = bundle.getString(EXTRA_CATEGORY_NAME);
         mNoteTitle = bundle.getString(EXTRA_NOTE_TITLE);
@@ -121,27 +104,12 @@ public class NoteDetailActivity extends AppCompatActivity implements View.OnClic
         mNoteBody = bundle.getString(EXTRA_NOTE_BODY);
     }
 
-    private void initUI() {
-        initToolbar();
-        mNoteTitleTextView = (TextView) findViewById(R.id.note_title_text_view);
-        mNoteIdTextView = (TextView) findViewById(R.id.note_id_text_view);
-        mNoteBodyTextView = (TextView) findViewById(R.id.note_body_text_view);
+    // region private methods
 
-        mEditNoteButton = (FloatingActionButton) findViewById(R.id.edit_note_button);
-        mDeleteNoteButton = (FloatingActionButton) findViewById(R.id.delete_note_button);
-
-        mEditNoteButton.setOnClickListener(this);
-        mDeleteNoteButton.setOnClickListener(this);
-
-        mNoteTitleTextView.setText(mNoteTitle);
+    private void fillUIData() {
+        mTitleEditText.setText(mNoteTitle);
         mNoteIdTextView.setText(mNoteId);
-        mNoteBodyTextView.setText(mNoteBody);
-    }
-
-    private void initToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mBodyEditText.setText(mNoteBody);
     }
 
     private void deleteNote() {
