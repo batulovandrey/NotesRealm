@@ -1,6 +1,5 @@
 package com.github.batulovandrey.notesrealm.model;
 
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 

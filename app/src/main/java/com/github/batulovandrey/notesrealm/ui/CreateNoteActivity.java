@@ -84,7 +84,7 @@ public class CreateNoteActivity extends BaseNoteActivity {
 
     private void saveNote(View view) {
         if (inputDataCorrect()) {
-            Snackbar.make(view, getString(R.string.save_note_question), Snackbar.LENGTH_LONG).setAction(R.string.yes, new View.OnClickListener() {
+            Snackbar.make(view, R.string.save_note_question, Snackbar.LENGTH_LONG).setAction(R.string.yes, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Note note = fillNoteData();
