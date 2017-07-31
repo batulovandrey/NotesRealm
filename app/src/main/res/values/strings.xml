@@ -2,7 +2,7 @@
     <string name="app_name">Заметки</string>
     <string name="add_category">Добавить категорию</string>
     <string name="exit_app">Выход из приложения</string>
-    <string name="are_you_sure">Вы действительно хотите выйти?</string>
+    <string name="are_you_sure">Вы уверены?</string>
     <string name="delete_note_question">Удалить заметку?</string>
     <string name="lose_input_data">Несохраненные данные будут потеряны. Уверены, что хотите прервать редактирование?</string>
     <string name="yes">Да</string>
