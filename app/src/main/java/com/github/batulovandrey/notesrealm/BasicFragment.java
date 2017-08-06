@@ -3,7 +3,6 @@ package com.github.batulovandrey.notesrealm;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -36,9 +35,6 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.add_note_button)
-    FloatingActionButton mAddNoteButton;
-
     private Unbinder mUnbinder;
     private NoteAdapter mAdapter;
 
@@ -68,7 +64,6 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setAdapter(mAdapter);
-        onClickButton(mAddNoteButton);
     }
 
     @Override
@@ -118,7 +113,6 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
         mTitle = title;
         return this;
     }
-
 
     private RealmList<Note> getNotesRealm() {
         RealmList<Note> notes = null;
