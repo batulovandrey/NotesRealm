@@ -22,10 +22,12 @@ import io.realm.Realm;
 
 /**
  * Abstract class for other activity
- * @author batul0ve
+ *
+ * @author Andrey Batulov on 27/07/2017
  */
 
 public abstract class BaseNoteActivity extends AppCompatActivity {
+
     protected static final String EXTRA_CATEGORY_NAME = "extra_category_name";
     protected static final String EXTRA_NOTE_TITLE = "extra_note_title";
     protected static final String EXTRA_NOTE_ID = "extra_note_id";

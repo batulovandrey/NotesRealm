@@ -6,10 +6,11 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 /**
- * Created by batul0ve on 17.07.2017.
+ * @author Andrey Batulov on 17/07/2017
  */
 
 public class RealmManager {
+
     private Realm mRealm;
 
     public RealmManager(Context context) {

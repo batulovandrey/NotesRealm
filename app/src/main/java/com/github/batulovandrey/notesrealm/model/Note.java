@@ -3,10 +3,11 @@ package com.github.batulovandrey.notesrealm.model;
 import io.realm.RealmObject;
 
 /**
- * Created by batul0ve on 18.07.2017.
+ * @author Andrey Batulov on 18/07/2017
  */
 
 public class Note extends RealmObject {
+
     private String id;
     private String title;
     private String body;

@@ -27,8 +27,14 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+/**
+ * @author Andrey Batulov on 15/07/2017
+ */
+
 public class MainActivity extends AppCompatActivity {
+
     private static final int CATEGORY_NAME_MIN_LENGTH = 3;
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -39,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     ViewPager mViewPager;
 
     private CustomPagerAdapter mAdapter;
-
     private Realm mRealm;
 
     // region Activity lifeCycle
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
         initUI();
         mAdapter = new CustomPagerAdapter(getSupportFragmentManager());
@@ -81,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
     // endregion
 
-    // region private method
+    // region private methods
+
     private void initUI() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -118,8 +125,10 @@ public class MainActivity extends AppCompatActivity {
     private void saveCategoryName(String categoryName) {
         boolean isContains = false;
         for (Category category : mRealm.allObjects(Category.class)) {
-            if (category.getCategoryName().equals(categoryName))
+            if (category.getCategoryName().equals(categoryName)) {
                 isContains = true;
+                break;
+            }
         }
         if (isContains) {
             Toast.makeText(getApplicationContext(), categoryName + " уже существует", Toast.LENGTH_SHORT).show();
@@ -207,4 +216,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).show();
     }
+
+    // endregion
 }

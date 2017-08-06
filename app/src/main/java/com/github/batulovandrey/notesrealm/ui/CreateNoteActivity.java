@@ -21,7 +21,7 @@ import io.realm.Realm;
 /**
  * Activity to create and save note {@link Note}
  *
- * @author Andrey Batulov
+ * @author Andrey Batulov on 24/07/2017
  */
 
 public class CreateNoteActivity extends BaseNoteActivity {

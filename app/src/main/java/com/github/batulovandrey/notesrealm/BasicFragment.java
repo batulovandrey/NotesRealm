@@ -1,6 +1,5 @@
 package com.github.batulovandrey.notesrealm;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +20,7 @@ import com.github.batulovandrey.notesrealm.ui.NoteDetailActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -28,10 +28,11 @@ import io.realm.RealmList;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * Created by batul0ve on 15.07.2017.
+ * @author Andrey Batulov on 15/07/2017
  */
 
 public class BasicFragment extends Fragment implements NoteAdapter.NoteClickListener {
+
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
@@ -43,7 +44,6 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
 
     private Realm mRealm;
     private String mTitle;
-    private RealmList<Note> mNotesRealm;
 
     public static BasicFragment newInstance() {
         return new BasicFragment();
@@ -68,19 +68,7 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setAdapter(mAdapter);
-        mAddNoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(v, getString(R.string.create_note_question), Snackbar.LENGTH_SHORT)
-                        .setAction(R.string.yes, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startActivityForResult(CreateNoteActivity.createExplicitIntent(getContext(), mTitle), 1);
-                            }
-                        })
-                        .show();
-            }
-        });
+        onClickButton(mAddNoteButton);
     }
 
     @Override
@@ -110,6 +98,18 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
                 1);
     }
 
+    @OnClick(R.id.add_note_button)
+    public void onClickButton(View v) {
+        Snackbar.make(v, getString(R.string.create_note_question), Snackbar.LENGTH_SHORT)
+                .setAction(R.string.yes, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivityForResult(CreateNoteActivity.createExplicitIntent(getContext(), mTitle), 1);
+                    }
+                })
+                .show();
+    }
+
     public String getTitle() {
         return mTitle;
     }
@@ -118,6 +118,7 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
         mTitle = title;
         return this;
     }
+
 
     private RealmList<Note> getNotesRealm() {
         RealmList<Note> notes = null;

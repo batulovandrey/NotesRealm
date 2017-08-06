@@ -17,11 +17,14 @@ import io.realm.Realm;
 /**
  * Activity to edit note {@link Note}
  *
- * @author batul0ve
+ * @author Andrey Batulov on 26/07/2017
  */
 public class EditNoteActivity extends BaseNoteActivity {
 
-    public static Intent createExplicitIntent(Context context, String noteTitle, String noteId, String noteBody) {
+    public static Intent createExplicitIntent(Context context,
+                                              String noteTitle,
+                                              String noteId,
+                                              String noteBody) {
         Intent intent = new Intent(context, EditNoteActivity.class);
         intent.putExtra(EXTRA_NOTE_TITLE, noteTitle);
         intent.putExtra(EXTRA_NOTE_ID, noteId);
@@ -79,7 +82,8 @@ public class EditNoteActivity extends BaseNoteActivity {
     // region private methods
 
     private boolean dataWasNotChanged() {
-        return mNoteTitle.equals(mTitleEditText.getText().toString()) && mNoteBody.equals(mBodyEditText.getText().toString());
+        return mNoteTitle.equals(mTitleEditText.getText().toString()) &&
+                mNoteBody.equals(mBodyEditText.getText().toString());
     }
 
     private void fillUIData() {
@@ -115,7 +119,6 @@ public class EditNoteActivity extends BaseNoteActivity {
                 Note note = mRealm.where(Note.class)
                         .equalTo("id", mNoteId)
                         .findFirst();
-
                 note.setTitle(mTitleEditText.getText().toString());
                 note.setBody(mBodyEditText.getText().toString());
             }

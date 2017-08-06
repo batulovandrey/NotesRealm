@@ -4,10 +4,11 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
- * Created by batul0ve on 17.07.2017.
+ * @author Andrey Batulov on 17/07/2017
  */
 
 public class Category extends RealmObject {
+
     private String categoryName;
     private RealmList<Note> notes;
 

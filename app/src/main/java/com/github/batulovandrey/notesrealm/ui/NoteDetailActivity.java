@@ -15,13 +15,17 @@ import io.realm.Realm;
 /**
  * Activity to show note details
  *
- * @author batul0ve
+ * @author Andrey Batulov on 25/07/2017
  */
 public class NoteDetailActivity extends BaseNoteActivity {
 
     private boolean mNoteEdited;
 
-    public static Intent createExplicitIntent(Context context, String categoryName, String noteTitle, String noteId, String noteBody) {
+    public static Intent createExplicitIntent(Context context,
+                                              String categoryName,
+                                              String noteTitle,
+                                              String noteId,
+                                              String noteBody) {
         Intent intent = new Intent(context, NoteDetailActivity.class);
         intent.putExtra(EXTRA_CATEGORY_NAME, categoryName);
         intent.putExtra(EXTRA_NOTE_TITLE, noteTitle);
@@ -31,14 +35,29 @@ public class NoteDetailActivity extends BaseNoteActivity {
     }
 
     @Override
-    protected boolean isEditTextEnabled() {
-        return false;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fillUIData();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                String newTitle = data.getStringExtra(EXTRA_NOTE_TITLE);
+                String newBody = data.getStringExtra(EXTRA_NOTE_BODY);
+                mTitleEditText.setText(newTitle);
+                mBodyEditText.setText(newBody);
+                mNoteEdited = true;
+                mNoteTitle = newTitle;
+                mNoteBody = newBody;
+            }
+        }
+    }
+
+    @Override
+    protected boolean isEditTextEnabled() {
+        return false;
     }
 
     @Override
@@ -71,21 +90,6 @@ public class NoteDetailActivity extends BaseNoteActivity {
                         deleteNote();
                     }
                 }).show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 2) {
-            if (resultCode == RESULT_OK) {
-                String newTitle = data.getStringExtra(EXTRA_NOTE_TITLE);
-                String newBody = data.getStringExtra(EXTRA_NOTE_BODY);
-                mTitleEditText.setText(newTitle);
-                mBodyEditText.setText(newBody);
-                mNoteEdited = true;
-                mNoteTitle = newTitle;
-                mNoteBody = newBody;
-            }
-        }
     }
 
     protected void handleActivityClosing() {

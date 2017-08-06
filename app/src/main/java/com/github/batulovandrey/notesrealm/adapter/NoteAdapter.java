@@ -14,10 +14,11 @@ import butterknife.ButterKnife;
 import io.realm.RealmList;
 
 /**
- * Created by batul0ve on 18.07.2017.
+ * @author Andrey Batulov on 18/07/2017
  */
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+
     private final NoteClickListener mNoteClickListener;
     private RealmList<Note> mNoteList;
 
@@ -28,7 +29,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     @Override
     public NoteAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View row = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent, false);
+        View row = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.note_item, parent, false);
         return new ViewHolder(row);
     }
 
@@ -45,6 +47,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         @BindView(R.id.title_text_view)
         TextView titleTextView;
 

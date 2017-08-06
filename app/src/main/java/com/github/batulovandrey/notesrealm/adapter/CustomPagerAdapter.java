@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by batul0ve on 15.07.2017.
+ * @author Andrey Batulov on 15/07/2017
  */
 
 public class CustomPagerAdapter extends FragmentStatePagerAdapter {
-    List<BasicFragment> mFragmentList;
+
+    private List<BasicFragment> mFragmentList;
 
     public CustomPagerAdapter(FragmentManager fm) {
         super(fm);
