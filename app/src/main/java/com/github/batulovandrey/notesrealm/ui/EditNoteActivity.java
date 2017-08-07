@@ -45,17 +45,22 @@ public class EditNoteActivity extends BaseNoteActivity {
         } else {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.close_activity)
-                    .setMessage(R.string.lose_input_data)
+                    .setMessage(R.string.save_changes)
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            finish();
+                            if (inputDataCorrect()) {
+                                editNote();
+                                finishActivityWithResultOk();
+                            } else {
+                                showErrorMessage();
+                            }
                         }
                     })
                     .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                            finish();
                         }
                     }).show();
         }

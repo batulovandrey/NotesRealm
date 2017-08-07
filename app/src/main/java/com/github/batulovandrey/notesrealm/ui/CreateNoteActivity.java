@@ -46,17 +46,17 @@ public class CreateNoteActivity extends BaseNoteActivity {
         } else {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.close_activity)
-                    .setMessage(R.string.lose_input_data)
+                    .setMessage(R.string.save_changes)
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            finish();
+                            closeActivityWithSavingChanges();
                         }
                     })
                     .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                            finish();
                         }
                     }).show();
         }
@@ -87,15 +87,19 @@ public class CreateNoteActivity extends BaseNoteActivity {
             Snackbar.make(view, R.string.save_note_question, Snackbar.LENGTH_LONG).setAction(R.string.yes, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Note note = fillNoteData();
-                    saveNoteToRealm(note);
-                    Intent intent = new Intent();
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    closeActivityWithSavingChanges();
                 }
             }).show();
 
         } else showErrorMessage();
+    }
+
+    private void closeActivityWithSavingChanges() {
+        Note note = fillNoteData();
+        saveNoteToRealm(note);
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     private boolean inputDataCorrect() {
