@@ -66,7 +66,7 @@ public abstract class BaseNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_main);
-        ((NotesRealmApp) getApplicationContext()).getNetComponent().inject(this);
+        NotesRealmApp.getNetComponent().inject(this);
         ButterKnife.bind(this);
         getDataFromIntent();
         initUI();

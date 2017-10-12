@@ -21,4 +21,5 @@
     <string name="edit_note">Редактирование заметки</string>
     <string name="remove_category">Удаление категории</string>
     <string name="save_changes">Сохранить изменения?</string>
+    <string name="need_more_symbols">Минимальное количество символов - 3</string>
 </resources>

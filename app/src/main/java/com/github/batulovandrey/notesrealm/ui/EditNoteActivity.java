@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.batulovandrey.notesrealm.R;
-import com.github.batulovandrey.notesrealm.model.Note;
+import com.github.batulovandrey.notesrealm.bean.Note;
 
 import io.realm.Realm;
 

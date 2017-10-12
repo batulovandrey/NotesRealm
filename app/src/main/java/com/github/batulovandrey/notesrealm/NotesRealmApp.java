@@ -13,18 +13,18 @@ import com.github.batulovandrey.notesrealm.dagger.NetModule;
 
 public class NotesRealmApp extends Application {
 
-    private NetComponent mNetComponent;
+    private static NetComponent sNetComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mNetComponent = DaggerNetComponent.builder()
+        sNetComponent = DaggerNetComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule(getApplicationContext()))
                 .build();
     }
 
-    public NetComponent getNetComponent() {
-        return mNetComponent;
+    public static NetComponent getNetComponent() {
+        return sNetComponent;
     }
 }

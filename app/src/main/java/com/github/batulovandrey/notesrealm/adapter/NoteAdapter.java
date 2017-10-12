@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.batulovandrey.notesrealm.R;
-import com.github.batulovandrey.notesrealm.model.Note;
+import com.github.batulovandrey.notesrealm.bean.Note;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

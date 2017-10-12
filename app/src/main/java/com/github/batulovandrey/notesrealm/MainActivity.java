@@ -16,25 +16,18 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.github.batulovandrey.notesrealm.adapter.CustomPagerAdapter;
-import com.github.batulovandrey.notesrealm.model.Category;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
+import com.github.batulovandrey.notesrealm.presenter.MainPresenter;
+import com.github.batulovandrey.notesrealm.presenter.MainPresenterImpl;
+import com.github.batulovandrey.notesrealm.view.MainView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * @author Andrey Batulov on 15/07/2017
  */
 
-public class MainActivity extends AppCompatActivity {
-
-    private static final int CATEGORY_NAME_MIN_LENGTH = 3;
+public class MainActivity extends AppCompatActivity implements MainView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -45,21 +38,19 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
 
-    @Inject
-    Realm mRealm;
-
-    private CustomPagerAdapter mAdapter;
+    private MainPresenter mMainPresenter;
 
     // region Activity lifeCycle
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ((NotesRealmApp) getApplicationContext()).getNetComponent().inject(this);
         ButterKnife.bind(this);
-        initUI();
-        mAdapter = new CustomPagerAdapter(getSupportFragmentManager());
-        fullAdapter();
+        mMainPresenter = new MainPresenterImpl(this);
+        initToolbar();
+        mMainPresenter.fillAdapter();
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
@@ -73,10 +64,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                closeApp();
+                mMainPresenter.closeApp();
                 return true;
             case R.id.new_category:
-                addNewCategory();
+                mMainPresenter.addNewCategory();
                 return true;
         }
         return false;
@@ -84,21 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        closeApp();
+        mMainPresenter.closeApp();
     }
 
     // endregion
 
-    // region private methods
-
-    private void initUI() {
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mViewPager.setAdapter(mAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
-    }
-
-    private void addNewCategory() {
+    @Override
+    public void addNewCategory() {
         LinearLayout view = (LinearLayout) getLayoutInflater().inflate(R.layout.create_dialog, null);
         final EditText editText = (EditText) view.findViewById(R.id.input_category_edit_text);
         new AlertDialog.Builder(this)
@@ -106,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (editText.getText().length() >= CATEGORY_NAME_MIN_LENGTH) {
-                            saveCategoryName(editText.getText().toString().toLowerCase());
-                            fullAdapter();
+                        if (mMainPresenter.isLengthCategoryTextOk(editText.getText().length())) {
+                            mMainPresenter.saveCategoryName(editText.getText().toString().toLowerCase());
+                            mMainPresenter.fillAdapter();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Минимум " + CATEGORY_NAME_MIN_LENGTH + " символов", Toast.LENGTH_SHORT).show();
+                            mMainPresenter.showToast(getString(R.string.need_more_symbols));
                         }
                     }
                 })
@@ -124,57 +107,35 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void saveCategoryName(String categoryName) {
-        boolean isContains = false;
-        for (Category category : mRealm.allObjects(Category.class)) {
-            if (category.getCategoryName().equals(categoryName)) {
-                isContains = true;
-                break;
-            }
-        }
-        if (isContains) {
-            Toast.makeText(getApplicationContext(), categoryName + " уже существует", Toast.LENGTH_SHORT).show();
-        } else {
-            mRealm.beginTransaction();
-            Category category = mRealm.createObject(Category.class);
-            category.setCategoryName(categoryName);
-            mRealm.commitTransaction();
-        }
+    @Override
+    public void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 
-    private void fullAdapter() {
-        mAdapter.clear();
-        List<BasicFragment> fragments = new ArrayList<>();
-        for (Category category : mRealm.allObjects(Category.class)) {
-            fragments.add(BasicFragment.newInstance().setTitle(category.getCategoryName()));
-        }
-        mAdapter.addFragments(fragments);
-        mViewPager.setAdapter(mAdapter);
-        setTabsLongClickListener();
-    }
-
-    private void setTabsLongClickListener() {
+    @Override
+    public void setTabsLongClickListener() {
         LinearLayout tabStrip = (LinearLayout) mTabLayout.getChildAt(0);
         for (int i = 0; i < tabStrip.getChildCount(); i++) {
             final int index = i;
             tabStrip.getChildAt(i).setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    deleteTabAt(index);
+                    mMainPresenter.deleteTabAt(index);
                     return false;
                 }
             });
         }
     }
 
-    private void deleteTabAt(final int position) {
+    @Override
+    public void deleteTabAt(final int position) {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.remove_category)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteCategoryAtPosition(position);
+                        mMainPresenter.deleteCategoryAtPosition(position);
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -185,22 +146,8 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
     }
 
-    private void deleteCategoryAtPosition(final int position) {
-        mRealm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmResults<Category> rows = realm.where(Category.class)
-                        .equalTo("categoryName", mRealm.allObjects(Category.class)
-                                .get(position)
-                                .getCategoryName())
-                        .findAll();
-                rows.clear();
-            }
-        });
-        fullAdapter();
-    }
-
-    private void closeApp() {
+    @Override
+    public void closeApp() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.exit_app)
                 .setMessage(R.string.are_you_sure)
@@ -218,5 +165,13 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
     }
 
-    // endregion
+    @Override
+    public void setAdapterToViewPager(CustomPagerAdapter adapter) {
+        mViewPager.setAdapter(adapter);
+    }
+
+    private void initToolbar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 }
