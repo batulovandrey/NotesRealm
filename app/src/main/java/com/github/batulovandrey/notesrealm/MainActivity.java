@@ -16,11 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.github.batulovandrey.notesrealm.adapter.CustomPagerAdapter;
-import com.github.batulovandrey.notesrealm.manager.RealmManager;
 import com.github.batulovandrey.notesrealm.model.Category;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,19 +45,20 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
 
+    @Inject
+    Realm mRealm;
+
     private CustomPagerAdapter mAdapter;
-    private Realm mRealm;
 
     // region Activity lifeCycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ((NotesRealmApp) getApplicationContext()).getNetComponent().inject(this);
         ButterKnife.bind(this);
         initUI();
         mAdapter = new CustomPagerAdapter(getSupportFragmentManager());
-        mRealm = new RealmManager(this).getRealm();
         fullAdapter();
     }
 
@@ -148,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         }
         mAdapter.addFragments(fragments);
         mViewPager.setAdapter(mAdapter);
-
         setTabsLongClickListener();
     }
 

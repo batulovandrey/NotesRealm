@@ -11,11 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.batulovandrey.notesrealm.adapter.NoteAdapter;
-import com.github.batulovandrey.notesrealm.manager.RealmManager;
 import com.github.batulovandrey.notesrealm.model.Category;
 import com.github.batulovandrey.notesrealm.model.Note;
 import com.github.batulovandrey.notesrealm.ui.CreateNoteActivity;
 import com.github.batulovandrey.notesrealm.ui.NoteDetailActivity;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,10 +36,11 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
+    @Inject
+    Realm mRealm;
+
     private Unbinder mUnbinder;
     private NoteAdapter mAdapter;
-
-    private Realm mRealm;
     private String mTitle;
 
     public static BasicFragment newInstance() {
@@ -48,7 +50,7 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRealm = new RealmManager(getContext()).getRealm();
+        ((NotesRealmApp) getContext().getApplicationContext()).getNetComponent().inject(this);
         mAdapter = new NoteAdapter(this, getNotesRealm());
     }
 
