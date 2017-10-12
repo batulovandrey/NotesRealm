@@ -7,8 +7,8 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.github.batulovandrey.notesrealm.R;
-import com.github.batulovandrey.notesrealm.model.Category;
-import com.github.batulovandrey.notesrealm.model.Note;
+import com.github.batulovandrey.notesrealm.bean.Category;
+import com.github.batulovandrey.notesrealm.bean.Note;
 
 import io.realm.Realm;
 

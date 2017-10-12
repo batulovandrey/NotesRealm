@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.batulovandrey.notesrealm.adapter.NoteAdapter;
-import com.github.batulovandrey.notesrealm.model.Category;
-import com.github.batulovandrey.notesrealm.model.Note;
+import com.github.batulovandrey.notesrealm.bean.Category;
+import com.github.batulovandrey.notesrealm.bean.Note;
 import com.github.batulovandrey.notesrealm.ui.CreateNoteActivity;
 import com.github.batulovandrey.notesrealm.ui.NoteDetailActivity;
 
@@ -50,7 +50,7 @@ public class BasicFragment extends Fragment implements NoteAdapter.NoteClickList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((NotesRealmApp) getContext().getApplicationContext()).getNetComponent().inject(this);
+        NotesRealmApp.getNetComponent().inject(this);
         mAdapter = new NoteAdapter(this, getNotesRealm());
     }
 

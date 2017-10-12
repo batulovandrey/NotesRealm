@@ -1,4 +1,4 @@
-package com.github.batulovandrey.notesrealm.model;
+package com.github.batulovandrey.notesrealm.bean;
 
 import io.realm.RealmObject;
 
