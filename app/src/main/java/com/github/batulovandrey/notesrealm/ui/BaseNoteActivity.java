@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.github.batulovandrey.notesrealm.NotesRealmApp;
 import com.github.batulovandrey.notesrealm.R;
-import com.github.batulovandrey.notesrealm.manager.RealmManager;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,8 +32,8 @@ public abstract class BaseNoteActivity extends AppCompatActivity {
 
     protected static final String EXTRA_CATEGORY_NAME = "extra_category_name";
     protected static final String EXTRA_NOTE_TITLE = "extra_note_title";
-    protected static final String EXTRA_NOTE_ID = "extra_note_id";
     protected static final String EXTRA_NOTE_BODY = "extra_note_body";
+    protected static final String EXTRA_NOTE_ID = "extra_note_id";
     protected static final int INPUT_MIN_LENGTH = 3;
 
     @BindView(R.id.toolbar)
@@ -52,20 +54,20 @@ public abstract class BaseNoteActivity extends AppCompatActivity {
     @BindView(R.id.delete_note_button)
     FloatingActionButton mSecondButton;
 
-    protected String mNoteTitle;
-    protected String mNoteId;
-    protected String mNoteBody;
-    protected String mCategoryName;
+    @Inject
+    Realm mRealm;
 
-    protected Realm mRealm;
+    protected String mCategoryName;
+    protected String mNoteTitle;
+    protected String mNoteBody;
+    protected String mNoteId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_main);
-
+        ((NotesRealmApp) getApplicationContext()).getNetComponent().inject(this);
         ButterKnife.bind(this);
-        mRealm = new RealmManager(this).getRealm();
         getDataFromIntent();
         initUI();
         hideKeyboard(isEditTextEnabled());
